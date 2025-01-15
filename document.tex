@@ -1,0 +1,214 @@
+\documentclass[a4paper,12pt]{article}
+%\usepackage{graphics}
+\usepackage{graphicx}
+
+\usepackage{xepersian}
+\settextfont{XB Zar}
+%\setlatintextfont{Times New Roman}
+\title{راهنمای استفاده از HPC}
+\author{گروه ماده چگال دانشگاه تربیت مدرس}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{مقدمه}
+
+این راهنما به شما کمک می‌کند تا بتوانید از سیستم \textbf{محاسباتی گروه ماده چگال تربیت مدرس} بهره ببرید و بتوانید کد و برنامه‌های خود را به اجرا بگذارید. بطور کلی به صورت استاندارد سیستم‌های HPC برای تقسیم منابع محاسباتی به کاربران از سیستم‌های مدیریت منابع در محیط HPC استفاده می‌کنند. یکی از این سیستم‌ها SLURM می‌باشد که در اینجا کار با آن را یاد خواهیم گرفت.\\
+نکات مهم قبل از شروع به کار:
+\begin{enumerate}
+	\item برای نصب هر گونه نرم افزار در سیستم می‌بایست با مسئول HPC تماس گرفته شود.
+	\item بطور کلی سیستم‌های HPC برای اجرای زمان‌بر و سنگین می‌باشند و نباید برای عیب‌یابی کد خود استفاده کنید.
+	\item کابران دسترسی root ندارند.
+	\item سیستم‌های HPC دسترسی به اینترنت ندارند.
+	\item برای اجرای سریع کد همواره بیشترین منابع کمک‌کننده نمی‌باشد و می‌بایست مقدارهای بهینه سیستم خود را بیابید.
+	\item چنانچه کد خارج اختیارات خود اجرا کنید به طور خودکار برای ادمین پیام ارسال خواهد شد.
+	\item
+به هر کاربر منابع محدودی تخصیص داده می‌شود. طبیعی است چنانچه بیشتر از آن حد درخواست شود سیستم اجرا نخواهد شد.
+\item سرورهای محاسباتی عموما برای کارای موازی ساخته شده‌اند. چنانچه کد شما موازی نوشته نشده باشد طبیعی است که بهره کمتری از آن خواهید برد و پیش از اجرا حتما از موازی بود کد خود اطمینان حاصل فرمائید.
+
+\end{enumerate}
+% این شامل ورود به سیستم، اجرای دستورات اصلی SLURM، ارسال کارها و رعایت نکات مهم می‌باشد.
+
+\section{ورود به سیستم (Login)}
+برای ورود به سیستم:
+\begin{enumerate}
+    \item یک شبیه‌ساز ترمینال 
+   مانند PuTTY یا Terminal باز کنید.
+    \item دستور زیر را اجرا کنید:
+\begin{latin}
+    \begin{verbatim}
+ssh username@hpc_server_address
+    \end{verbatim}
+\end{latin}
+    \item رمز عبور خود را وارد کنید.
+    \item در صورت نیاز به استفاده از احراز هویت دو مرحله‌ای، دستورالعمل‌های ارائه‌شده را دنبال کنید.
+\end{enumerate}
+\textbf{توجه:} username و hpc\_server\_address هنگام ثبت‌نام در اختیارتان قرار خواهد گرفت.
+
+\section{مدیریت ماژول‌ها در اوبونتو}
+از آنجاییکه که فضای HPC یک فضای مشترک است و با توجه به نیازهای متعدد کاربران از پکیج‌های نرم‌افزاری برای مدیریت نرم‌افزارها در محیط HPC از سیستم ماژول‌ها استفاده می‌شود. در این سیستم از میان ماژول‌های (نرم‌افزار، کتابخانه یا پکیج ) موجود می‌توان آن‌هایی که مورد نیاز است را load کنید. بنابراین چنانچه نیاز به نرم‌افزاری دارید و در لیست وجود داشت می‌بایست load کنید چون قبل از load کردن سیستم از وجود آن اطلاعی نخواهد داشت.\\
+ دستورات زیر برای کار با ماژول‌ها مفید هستند:
+\begin{itemize}
+	\item \textbf{نمایش ماژول‌های موجود:}
+	\begin{latin}
+		\begin{verbatim}
+		module avail
+		\end{verbatim}
+	\end{latin}
+	این دستور لیستی از ماژول‌های نرم‌افزاری موجود را نمایش می‌دهد.
+	
+	\item \textbf{بارگذاری یک ماژول:}
+	\begin{latin}
+		\begin{verbatim}
+		module load module_name
+		\end{verbatim}
+	\end{latin}
+	\lr{module\_name} را با نام ماژول مورد نظر جایگزین کنید.
+	
+	\item \textbf{لغو بارگذاری یک ماژول:}
+	\begin{latin}
+		\begin{verbatim}
+		module unload module_name
+		\end{verbatim}
+	\end{latin}
+	\lr{module\_name} را با نام ماژول مورد نظر جایگزین کنید.
+	
+	\item \textbf{نمایش ماژول‌های بارگذاری‌شده:}
+	\begin{latin}
+		\begin{verbatim}
+		module list
+		\end{verbatim}
+	\end{latin}
+	این دستور لیستی از ماژول‌های فعال را نمایش می‌دهد.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{module_avail.png}
+	\caption{لیست ماژول‌های موجود}
+	\label{fig:moduleavail}
+\end{figure}
+
+\end{itemize}
+
+
+
+\section{دستورات اصلی SLURM}
+برای شروع بدانید که سیستمی مانند SLURM هدفش قرار دادن اجرای شما در صف میان دیگر کاربران است. برای همین مانند هر صف دیگر با تعیین نیازهای واقعی خود از جمله زمان مورد نیاز اجرا، منابع محاسباتی مناسب می‌توانید در شروع اجرا تسریع داشته باشید.\\
+در سیستم SLURM عموما می‌بایست کار
+\LTRfootnote{job}
+ خود در قالب یک فایل ثبت کنید تا در صف قرار بگیرد.\\
+ 
+SLURM دستورات متعددی برای مدیریت کارها دارد. برخی از این دستورات عبارتند از:
+\begin{itemize}
+    \item \textbf{مشاهده وضعیت گره‌ها:}
+    \begin{latin}
+        \begin{verbatim}
+sinfo
+        \end{verbatim}
+    \end{latin}
+    این دستور اطلاعاتی در مورد گره‌های موجود در سیستم نمایش می‌دهد.
+    
+    \item \textbf{ارسال یک کار:}
+    \begin{latin}
+        \begin{verbatim}
+sbatch job_script.sh
+        \end{verbatim}
+    \end{latin}
+    فایل \lr{job\_script.sh} باید شامل مشخصات کار باشد. ( \lr{job\_script.sh}  فایلی است که می‌بایست ثبت نمایید)
+
+    \item \textbf{مشاهده وضعیت کارها:}
+    \begin{latin}
+        \begin{verbatim}
+squeue
+        \end{verbatim}
+    \end{latin}
+    این دستور وضعیت کارهای ارسال‌شده را نمایش می‌دهد (می‌توانید id کار خود را ببینید).
+    \item \textbf{لغو یک کار:}
+    \begin{latin}
+        \begin{verbatim}
+scancel job_id
+        \end{verbatim}
+    \end{latin}
+    :job\_id
+    این id کار شماست.
+\end{itemize}
+
+\section{ساخت اسکریپت کار}
+یک فایل اسکریپت نمونه:
+\begin{latin}
+\begin{verbatim}
+#!/bin/bash
+#SBATCH --job-name=test_job
+#SBATCH --output=output.txt
+#SBATCH --error=error.txt
+#SBATCH --ntasks=1
+#SBATCH --time=01:00:00
+#SBATCH --partition=standard
+
+module load python
+python script.py
+\end{verbatim}
+\end{latin}
+
+\subsection{توضیح اسکریپت}
+\begin{itemize}
+    \item \lr{\#SBATCH --job-name}: نام کار
+    \item \lr{\#SBATCH --output}: مسیر فایل خروجی
+    \item \lr{\#SBATCH --error}: مسیر فایل خطاها
+    \item \lr{\#SBATCH --ntasks}: تعداد پردازش‌ها
+    \item \lr{\#SBATCH --time}: زمان اجرا (ساعت:دقیقه:ثانیه)
+    \item \lr{\#SBATCH --partition}: بخش مورد نظر
+\end{itemize}
+
+\section{نکات مهم}
+\begin{itemize}
+    \item همیشه از تنظیمات صحیح برای اسکریپت‌های خود اطمینان حاصل کنید.
+    \item قبل از ارسال کارها، وضعیت گره‌ها را بررسی کنید.
+    \item از فضای ذخیره‌سازی به صورت بهینه استفاده کنید.
+    \item پس از اتمام کارها، فایل‌های خروجی را بررسی کنید.
+\end{itemize}
+\section{ساخت اسکریپت کار}
+یک فایل اسکریپت نمونه:
+\begin{latin}
+	\begin{verbatim}
+	#!/bin/bash
+	#SBATCH --job-name=test_job
+	#SBATCH --output=output.txt
+	#SBATCH --error=error.txt
+	#SBATCH --ntasks=1
+	#SBATCH --time=01:00:00
+	#SBATCH --partition=standard
+	
+	module load python
+	python script.py
+	\end{verbatim}
+\end{latin}
+
+\subsection{توضیح اسکریپت}
+\begin{itemize}
+	\item \lr{\#SBATCH --job-name}: نام کار
+	\item \lr{\#SBATCH --output}: مسیر فایل خروجی
+	\item \lr{\#SBATCH --error}: مسیر فایل خطاها
+	\item \lr{\#SBATCH --ntasks}: تعداد پردازش‌ها
+	\item \lr{\#SBATCH --time}: زمان اجرا (ساعت:دقیقه:ثانیه)
+	\item \lr{\#SBATCH --partition}: بخش مورد نظر
+\end{itemize}
+
+\section{نکات مهم}
+\begin{itemize}
+	\item همیشه از تنظیمات صحیح برای اسکریپت‌های خود اطمینان حاصل کنید.
+	\item قبل از ارسال کارها، وضعیت گره‌ها را بررسی کنید.
+	\item از فضای ذخیره‌سازی به صورت بهینه استفاده کنید.
+	\item پس از اتمام کارها، فایل‌های خروجی را بررسی کنید.
+\end{itemize}
+
+\section{منابع بیشتر}
+برای اطلاعات بیشتر به مستندات رسمی SLURM مراجعه کنید:
+\begin{latin}
+\begin{verbatim}
+https://slurm.schedmd.com/documentation.html
+\end{verbatim}
+\end{latin}
+
+\end{document}
