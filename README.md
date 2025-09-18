@@ -152,5 +152,12 @@ https://slurm.schedmd.com/documentation.html
 - julia/1.11.0
 - lammps/2Aug2023
 - lammps/active_2Aug2023
-- openmpi/v5.0.5 
-
+- openmpi/v5.0.5
+- julia/1.11.0
+- scalapack/2.2.0
+- boost/1.83.0
+- mpich/4.1.2
+- vasp/6.4.2     
+- espressomd/4.2.2 
+- openblas/0.3.27  
+- fftw/3.3.10
