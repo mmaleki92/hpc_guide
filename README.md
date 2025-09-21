@@ -105,6 +105,15 @@ scancel job_id
 ```
 job_id این id کار شماست.
 
+
+برای اجرای فایل job ود می‌بایست یک فایل batch ایجاد کنید و دستورات مورد نیاز کار خود را در آن وارد نمایید و با دستو زیر آن را در صف اجرا قرار دهید:
+
+```
+sbatch job.sh
+```
+
+برای ساخت فایل job می‌توانید از بخش زیر نمونه‌ آن را مشاهده نمایید.
+
 ## ساخت اسکریپت کار
 یک فایل اسکریپت نمونه:
 
@@ -115,7 +124,7 @@ job_id این id کار شماست.
 #SBATCH --error=error.txt
 #SBATCH --ntasks=1
 #SBATCH --time=01:00:00
-#SBATCH --partition=standard
+
 
 module load python
 python script.py
